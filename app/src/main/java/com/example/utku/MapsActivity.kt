@@ -1,29 +1,20 @@
 package com.example.utku
 
 import android.content.pm.PackageManager
-import android.location.Geocoder
 import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
 import android.widget.SeekBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-
+import com.example.utku.databinding.ActivityMapsBinding
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.example.utku.databinding.ActivityMapsBinding
-import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.*
-import java.util.*
-import java.util.function.DoubleUnaryOperator
-import kotlin.collections.ArrayList
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, SeekBar.OnSeekBarChangeListener {
 
@@ -34,10 +25,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, SeekBar.OnSeekBarC
 
     private lateinit var latLngList: List<LatLng>
     private lateinit var markerList: List<Marker>
-    private lateinit var polyLineOptions: PolylineOptions
+    var polyLineOptions: PolylineOptions? = null
     var polyLine: Polyline? = null
+    var markerOptions: MarkerOptions? = null
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
+    var latLng: LatLng? = null
+    var marker: Marker? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,13 +48,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, SeekBar.OnSeekBarC
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         getLocationPermission()
 
-
-        binding.buttonDraw.setOnClickListener {
-            if (polyLine != null) polyLine!!.remove()
-
-            polyLineOptions.addAll(latLngList).clickable(true)
-            polyLine = mMap.addPolyline(polyLineOptions)
-        }
 
         binding.buttonClear.setOnClickListener {
             if (polyLine != null) polyLine!!.remove()
@@ -133,8 +120,114 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, SeekBar.OnSeekBarC
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        // val latlong = LatLng(currentLocation?.latitude!!, currentLocation?.longitude!!)
-        // drawMarker(latlong)
+        val sydney = LatLng(-33.852, 151.211)
+        googleMap.addMarker(
+            MarkerOptions()
+                .position(sydney)
+                .title("Marker in Sydney")
+        )
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        val sid = LatLng(-33.545, 125.276)
+        googleMap.addMarker(
+            MarkerOptions()
+                .position(sid)
+                .title("sid")
+        )
+           googleMap.moveCamera(CameraUpdateFactory.newLatLng(sid))
+
+
+        val polyline1 = googleMap.addPolyline(PolylineOptions()
+            .clickable(true)
+            .add(
+                LatLng(-33.545, 125.276),
+                LatLng(-33.852, 151.211),
+               ))
+        polyline1.tag = "sonunda"
+
+    }
+    /*
+        val m1 = LatLng(20.1,40.1)
+        val m2 = LatLng(30.1,50.1)
+        val m3 = LatLng(40.1,60.1)
+        val m4 = LatLng(50.1,70.1)
+        val m5 = LatLng(60.1,80.1)
+
+         googleMap.addMarker(MarkerOptions()
+            .position(m1)
+            .draggable(true)
+            .title("marker")
+         )
+
+
+
+    }
+
+     */
+        /*
+        mMap.setOnMapClickListener { p0 ->
+            val location = LatLng(p0.latitude, p0.longitude)
+            mMap.addMarker(MarkerOptions().position(location))
+
+
+
+            binding.buttonDraw.setOnClickListener {
+                if (polyLine != null) polyLine!!.remove()
+
+
+                polyLineOptions = PolylineOptions()
+                    .addAll(latLngList)
+                    .clickable(true)
+
+                polyLine = mMap.addPolyline(polyLineOptions)
+
+            }
+        }
+    }
+
+         */
+
+
+
+
+    /*
+val sdyney = LatLng(-33.852,151.211)
+googleMap.addMarker(
+ MarkerOptions()
+     .position(latLng)
+     .title("Marker Sydney")
+     .draggable(true)
+)
+
+*/
+            /*
+            binding.buttonDraw.setOnClickListener {
+                if (polyLine != null) polyLine!!.remove()
+                latLngList = ArrayList()
+                polyLineOptions = PolylineOptions()
+                    .addAll(latLngList)
+                    .clickable(true)
+                polyLine = mMap.addPolyline(PolylineOptions()
+                    .width(2F))
+
+            }
+
+             */
+            //drawMarker()
+
+
+
+/*              val sdyney = LatLng(-33.852,151.211)
+                googleMap.addMarker(
+                MarkerOptions()
+                    .position(latLng)
+                    .title("Marker Sydney")
+                    .draggable(true)
+                    )
+*/
+
+/*
+        val latlong = LatLng(currentLocation?.latitude!!, currentLocation?.longitude!!)
+       drawMarker(latlong)
 
         mMap.setOnMarkerDragListener(object : GoogleMap.OnMarkerDragListener {
             override fun onMarkerDragStart(p0: Marker) {
@@ -153,25 +246,31 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, SeekBar.OnSeekBarC
 
             }
         })
+ */
         /*
-               val sydney = LatLng(-34.0, 151.0)
-               mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-               mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
-           }
-         */
+                      val sydney = LatLng(-34.0, 151.0)
+                      mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
+                      mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+                  }
+                */
 
 
-    }
 
-    private fun drawMarker(latlong: LatLng) {
-        val markerOption = MarkerOptions().position(latlong).title("buradasın")
+
+
+     private fun drawMarker() {
+        //val markerOption = MarkerOptions().position(latlong).title("buradasın")
         //.snippet(getAddress(latlong.latitude, latlong.latitude).toString()).draggable(true)
 
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(latlong))
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlong, 15f))
-        currentMarker = mMap.addMarker(markerOption)
-        currentMarker?.showInfoWindow()
+
+
+
+       // mMap.animateCamera(CameraUpdateFactory.newLatLng(latlong))
+        //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlong, 15f))
+        // currentMarker = mMap.addMarker()
+       // currentMarker?.showInfoWindow()
     }
+
 
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
 
